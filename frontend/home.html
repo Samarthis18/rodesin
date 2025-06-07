@@ -263,10 +263,31 @@
         transform: translateX(5px);
     }
 
+    #backToTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 40px;
+        right: 30px;
+        z-index: 100;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+        padding: 12px 18px;
+        border-radius: 50%;
+        transition: opacity 0.3s ease;
+    }
+
+    #backToTopBtn:hover {
+        background-color: #555;
+    }
+
     /* Hero Section */
     .hero-section {
         background-color: transparent;
-        /*change here to update colours*/
+        /change here to update colours/
         height: 740px;
         width: 100%;
         display: flex;
@@ -397,12 +418,12 @@
         gap: 30px;
         margin: 40px 0;
         background: rgba(255, 255, 255, 0.1);
-        /*morphism colour update*/
+        /* morphism colour update */
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         border-radius: 20px;
 
-        box-shadow: 0 25px 45px #2A0508, ;
+        box-shadow: 0 25px 45px #2A0508;
         border: 1px solid rgba(255, 255, 255, 0.2);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -884,139 +905,220 @@
             grid-template-columns: 1fr;
         }
     }
-</style>
-<script src="">
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Back to Top Button Functionality
+            const backToTopBtn = document.getElementById("backToTopBtn");
+            const backbutton = document.querySelector('.back-button');
 
-    function goBack() {
-        // In a real application, this would navigate back
-        console.log('Going back to previous page');
-        window.history.back();
-    }
-    // Add click event listener to all model-viewer elements on the page
-    document.querySelectorAll('model-viewer').forEach(modelViewer => {
-        modelViewer.addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default action if inside a link
-            if (confirm('First login for viewing the product. Do you want to login now?')) {
-                window.location.href = 'login.html';
+            window.addEventListener('scroll', function () {
+                if (document.body.scrollTop > 10 || document.documentElement.scrollTop > 10) {
+                    backToTopBtn.style.display = "block";
+                } else {
+                    backToTopBtn.style.display = "none";
+                }
+            });
+        
+            backToTopBtn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Load and display saved designs in home page
+            function loadSavedDesigns() {
+                const container = document.getElementById('savedDesignsContainer');
+                container.innerHTML = '';
+
+                const savedDesigns = JSON.parse(localStorage.getItem('savedDesigns') || '[]');
+                if (savedDesigns.length === 0) {
+                    container.innerHTML = '<p style="color: white; text-align: center; font-weight: 600;">No saved designs yet.</p>';
+                    return;
+                }
+
+                savedDesigns.forEach((design, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'saved-card';
+                    card.style.background = 'linear-gradient(145deg, #5c7896, #3c0007)';
+                    card.style.borderRadius = '12px';
+                    card.style.padding = '15px';
+                    card.style.margin = '10px';
+                    card.style.color = 'white';
+                    card.style.textAlign = 'center';
+                    card.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+                    card.innerHTML = `
+                        <img src="${design.image}" alt="${design.name}" style="width: 100%; max-height: 180px; object-fit: contain; border-radius: 12px; margin-bottom: 10px; border: 2px solid white;">
+                        <h3>${design.name}</h3>
+                        <p><strong>Category:</strong> ${design.category}</p>
+                        <p><strong>Description:</strong> ${design.description || '--'}</p>
+                        <p><strong>Price:</strong> ₹${design.price}</p>
+                        <button class="delete-btn" style="background: #800C1F; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-top: 10px;">Delete</button>
+                    `;
+                    const deleteBtn = card.querySelector('button.delete-btn');
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to delete this design?')) {
+                            deleteDesign(index);
+                        }
+                    });
+                    container.appendChild(card);
+                });
             }
+
+            function deleteDesign(index) {
+                const savedDesigns = JSON.parse(localStorage.getItem('savedDesigns') || '[]');
+                savedDesigns.splice(index, 1);
+                localStorage.setItem('savedDesigns', JSON.stringify(savedDesigns));
+                loadSavedDesigns();
+            }
+
+            // Add a dedicated div for saved designs permanently visible on home page
+            const savedContainer = document.createElement('div');
+            savedContainer.id = 'savedDesignsContainer';
+            savedContainer.style.position = 'relative';
+            savedContainer.style.margin = '20px auto';
+            savedContainer.style.maxWidth = '1200px';
+            savedContainer.style.background = 'linear-gradient(145deg, #5c7896, #3c0007)';
+            savedContainer.style.borderRadius = '12px';
+            savedContainer.style.padding = '20px';
+            savedContainer.style.color = 'white';
+            savedContainer.style.boxShadow = '0 0 15px rgba(0,0,0,0.7)';
+            savedContainer.style.minHeight = '200px';
+            document.body.insertBefore(savedContainer, document.body.firstChild.nextSibling.nextSibling); // Insert after header and nav
+
+            // Load saved designs initially
+            loadSavedDesigns();
         });
-    });
-    // Countdown Timer Functionality
-    function updateCountdown() {
-        const days = document.querySelector('.countdown-box:nth-child(1) .countdown-number');
-        const hours = document.querySelector('.countdown-box:nth-child(2) .countdown-number');
-        const minutes = document.querySelector('.countdown-box:nth-child(3) .countdown-number');
 
-        let daysValue = parseInt(days.textContent);
-        let hoursValue = parseInt(hours.textContent);
-        let minutesValue = parseInt(minutes.textContent);
+        function goBack() {
+            // In a real application, this would navigate back
+            console.log('Going back to previous page');
+            window.history.back();
+        }
+        // Add click event listener to all model-viewer elements on the page
+        document.querySelectorAll('model-viewer').forEach(modelViewer => {
+            modelViewer.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default action if inside a link
+                if (confirm('First login for viewing the product. Do you want to login now?')) {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+        // Countdown Timer Functionality
+        function updateCountdown() {
+            const days = document.querySelector('.countdown-box:nth-child(1) .countdown-number');
+            const hours = document.querySelector('.countdown-box:nth-child(2) .countdown-number');
+            const minutes = document.querySelector('.countdown-box:nth-child(3) .countdown-number');
 
-        // Update countdown every minute
-        setInterval(() => {
-            minutesValue--;
+            let daysValue = parseInt(days.textContent);
+            let hoursValue = parseInt(hours.textContent);
+            let minutesValue = parseInt(minutes.textContent);
 
-            if (minutesValue < 0) {
-                minutesValue = 59;
-                hoursValue--;
+            // Update countdown every minute
+            setInterval(() => {
+                minutesValue--;
 
-                if (hoursValue < 0) {
-                    hoursValue = 23;
-                    daysValue--;
+                if (minutesValue < 0) {
+                    minutesValue = 59;
+                    hoursValue--;
 
-                    if (daysValue < 0) {
-                        // Reset countdown when it reaches zero
-                        daysValue = 6;
-                        hoursValue = 18;
-                        minutesValue = 48;
+                    if (hoursValue < 0) {
+                        hoursValue = 23;
+                        daysValue--;
+
+                        if (daysValue < 0) {
+                            // Reset countdown when it reaches zero
+                            daysValue = 6;
+                            hoursValue = 18;
+                            minutesValue = 48;
+                        }
                     }
                 }
-            }
 
-            // Update display
-            days.textContent = daysValue.toString().padStart(2, '0');
-            hours.textContent = hoursValue.toString().padStart(2, '0');
-            minutes.textContent = minutesValue.toString().padStart(2, '0');
-        }, 60000); // Update every minute
-    }
+                // Update display
+                days.textContent = daysValue.toString().padStart(2, '0');
+                hours.textContent = hoursValue.toString().padStart(2, '0');
+                minutes.textContent = minutesValue.toString().padStart(2, '0');
+            }, 60000); // Update every minute
+        }
 
-    // Initialize countdown
-    updateCountdown();
+        // Initialize countdown
+        updateCountdown();
 
-    // Tab Functionality
-    const tabs = document.querySelectorAll('.tab');
+        // Tab Functionality
+        const tabs = document.querySelectorAll('.tab');
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            tabs.forEach(t => t.classList.remove('active'));
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
 
-            // Add active class to clicked tab
-            tab.classList.add('active');
+                // Add active class to clicked tab
+                tab.classList.add('active');
 
-            // You would typically load different products here based on the selected tab
+                // You would typically load different products here based on the selected tab
+                // For this demo, we'll just show an alert
+                alert(`${tab.textContent} category selected!`);
+            });
+        });
+
+        // Navigation Menu Toggle
+        const menuIcon = document.querySelector('.menu-icon');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuIcon.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        // Back Button Functionality
+        const backButton = document.querySelector('.back-button');
+
+        backButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // See More Button Functionality
+        const seeMoreBtn = document.querySelector('.see-more-btn');
+
+        seeMoreBtn.addEventListener('click', () => {
+            // In a real app, this would load more products
             // For this demo, we'll just show an alert
-            alert(`${tab.textContent} category selected!`);
+            alert('Loading more products!');
         });
-    });
 
-    // Navigation Menu Toggle
-    const menuIcon = document.querySelector('.menu-icon');
-    const navLinks = document.querySelector('.nav-links');
+        // Shop Now Button Functionality
+        const shopNowBtn = document.querySelector('.shop-now-btn');
 
-    menuIcon.addEventListener('click', () => {
-        navLinks.style.display = navLinks.style.display === 'none' ? 'flex' : 'none';
-    });
-
-    // Back Button Functionality
-    const backButton = document.querySelector('.back-button');
-
-    backButton.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // See More Button Functionality
-    const seeMoreBtn = document.querySelector('.see-more-btn');
-
-    seeMoreBtn.addEventListener('click', () => {
-        // In a real app, this would load more products
-        // For this demo, we'll just show an alert
-        alert('Loading more products!');
-    });
-
-    // Shop Now Button Functionality
-    const shopNowBtn = document.querySelector('.shop-now-btn');
-
-    shopNowBtn.addEventListener('click', () => {
-        // In a real app, this would navigate to the shop
-        // For this demo, we'll just show an alert
-        alert('Redirecting to exclusive offers!');
-        alert('Redirecting to exclusive offers!');
-    });
-
-    // Product Card Click Functionality
-    const productCards = document.querySelectorAll('.product-card');
-
-    productCards.forEach(card => {
-        card.addEventListener('click', () => {
-            // In a real app, this would navigate to the product detail page
+        shopNowBtn.addEventListener('click', () => {
+            // In a real app, this would navigate to the shop
             // For this demo, we'll just show an alert
-            const productName = card.querySelector('.product-name').textContent;
-            alert(`Viewing details for ${productName}`);
+            alert('Redirecting to exclusive offers!');
+            alert('Redirecting to exclusive offers!');
         });
 
-        // Add hover effect
-        card.style.cursor = 'pointer';
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'scale(1.05)';
-            card.style.transition = 'transform 0.3s ease';
+        // Product Card Click Functionality
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // In a real app, this would navigate to the product detail page
+                // For this demo, we'll just show an alert
+                const productName = card.querySelector('.product-name').textContent;
+                alert(`Viewing details for ${productName}`);
+            });
+
+            // Add hover effect
+            card.style.cursor = 'pointer';
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'scale(1.05)';
+                card.style.transition = 'transform 0.3s ease';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
         });
 
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'scale(1)';
-        });
-    });
-
-</script>
+        
+    </script>
 
 <body>
     <!-- Header -->
@@ -1072,6 +1174,9 @@
         <span>← GO BACK</span>
     </div>
 
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" title="Go to top">↑</button>
+    
     <!-- Hero Section -->
     <!-- Hero Section -->
     <section class="hero-section">

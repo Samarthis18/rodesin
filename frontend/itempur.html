@@ -228,21 +228,20 @@
         .back-button:hover span {
             transform: translateX(5px);
         }
+        
 
         .content {
             display: flex;
             margin-top: 3%;
             padding: 0 20px 40px 20px;
-            background-color: white;
             border-radius: 15px;
             margin: 15px 20px 20px;
             box-shadow: 0 4px 15px rgba(126, 24, 36, 0.1);
             backdrop-filter: blur(15px);
             background: rgba(255, 255, 255, 0.1);
             -webkit-backdrop-filter: blur(15px);
-            padding: 40px;
+            padding: 50px;
             border-radius: 20px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -477,12 +476,12 @@
         /* Fixed view buttons styles */
         .view-buttons-container {
             position: absolute;
-            bottom: 50px;
-            left: 0;
+            top: 10px;
+            padding-right: 420px;
             width: 100%;
             display: flex;
             justify-content: center;
-            z-index: 10;
+            z-index: 1000;
         }
 
         .view-buttons {
@@ -490,9 +489,10 @@
             justify-content: center;
             gap: 15px;
             padding: 10px 15px;
-            background-color: rgba(42, 5, 8, 0.8);
+            box-shadow: 0 4px 15px rgba(126, 24, 36, 0);
+            backdrop-filter: blur(15px);
+            background: transparent;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .view-button {
@@ -577,6 +577,7 @@
         <div class="back-button" onclick="goBack()">
             <span>← GO BACK</span>
         </div>
+        
 
         <div class="content">
             <div class="blueprint-thumbnails">
@@ -596,13 +597,7 @@
                     touch-action="pan-y" style="width: 80px; height: 80px;"
                     onclick="changeModel('3dmodels/cars/og.glb', this)"></model-viewer>
             </div>
-
-            <div class="main-blueprint" style="position: relative;">
-                <model-viewer id="mainModel" src="3dmodels/cars/bmw.glb" alt="Car Coupe 3D Model" camera-controls
-                    touch-action="pan-y" style="width: 649px; height: 484px;">
-                </model-viewer>
-
-                <div class="view-buttons-container">
+            <div class="view-buttons-container">
                     <div class="view-buttons" id="viewButtons">
                         <button class="view-button active" onclick="changeView('0deg 75deg 2.5m', this)">Front</button>
                         <button class="view-button" onclick="changeView('90deg 75deg 2.5m', this)">Side</button>
@@ -611,6 +606,11 @@
                         <button class="view-button" onclick="changeView('0deg 0deg 2.5m', this)">Top</button>
                     </div>
                 </div>
+
+            <div class="main-blueprint" style="position: relative;">
+                <model-viewer id="mainModel" src="3dmodels/cars/bmw.glb" alt="Car Coupe 3D Model" camera-controls
+                    touch-action="pan-y" style="width: 649px; height: 484px;">
+                </model-viewer>
 
                 <div class="fullscreen-icon" onclick="openFullscreen()">
                     <i>⛶</i>
