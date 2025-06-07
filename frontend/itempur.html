@@ -631,7 +631,7 @@
                 </p>
                 <div class="action-buttons">
                     <a href="cart.html"> <button class="btn" id="addToCartBtn">ADD TO CART</button></a>
-                    <a href="order.html"> <button class="btn" id="buyNowBtn">BUY NOW</button></a>
+                    <a href="order.html" id="buyNowLink"> <button class="btn" id="buyNowBtn">BUY NOW</button></a>
                 </div>
                 <div class="price-like-container">
                     <p class="product-price">$38.99</p>
@@ -787,7 +787,39 @@
             updateModelInfo(defaultModelSrc);
         }
     });
-</script>
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    </script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
+    <script>
+        // Update the BUY NOW button href with the selected model id
+        function updateBuyNowLink() {
+            const activeThumbnail = document.querySelector('.thumbnail.active');
+            if (!activeThumbnail) return;
+            const modelMap = {
+                '3dmodels/cars/bmw.glb': '1',
+                '3dmodels/cars/dodge.glb': '2',
+                '3dmodels/cars/f1.glb': '3',
+                '3dmodels/cars/lambo.glb': '4',
+                '3dmodels/cars/og.glb': '5'
+            };
+            const modelSrc = activeThumbnail.getAttribute('src');
+            const modelId = modelMap[modelSrc];
+            const buyNowLink = document.getElementById('buyNowLink');
+            if (modelId && buyNowLink) {
+                buyNowLink.href = `order.html?model=${modelId}`;
+            }
+        }
+
+        // Call updateBuyNowLink on page load and whenever model changes
+        window.addEventListener('DOMContentLoaded', () => {
+            updateBuyNowLink();
+        });
+
+        // Modify changeModel function to update BUY NOW link on model change
+        const originalChangeModel = changeModel;
+        changeModel = function(modelSrc, element) {
+            originalChangeModel(modelSrc, element);
+            updateBuyNowLink();
+        };
+    </script>
 </html>

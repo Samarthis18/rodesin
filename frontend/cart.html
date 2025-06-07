@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cart and Payment</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -447,7 +448,8 @@
   <div class="wrapper">
   <!-- Header -->
   <header class="header">
-    <img src="images/img_roshani_logo_1.png" alt="Roshani Logo" class="logo">
+   
+     
     <div class="search-bar">
       <input type="text" placeholder="Search here...">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search"
@@ -500,34 +502,40 @@
 
       <div class="cart-item">
         <input type="checkbox" checked />
-        <img src="images/design1.jpg" alt="Car design" />
+      <model-viewer id="thumbnail1" src="3dmodels/cars/bmw.glb" alt="BMW" class="thumbnail active"
+                    camera-controls touch-action="pan-y" style="width: 80px; height: 80px;"
+                    onclick="changeModel('3dmodels/cars/bmw.glb', this)"></model-viewer>
         <div class="item-info">
-          <p>Mechanical design</p>
-          <p>Description ▼</p>
+          <p>BMW</p>
+          <p>BMW – The Ultimate Driving Machine Experience the perfect blend of luxury, performance, and innovation with BMW.</p>
         </div>
-        <div class="price">₹300/-</div>
+        <div class="price">₹38.99</div>
         <button class="edit-btn">✖ Edit Order</button>
       </div>
 
       <div class="cart-item">
         <input type="checkbox" checked />
-        <img src="images/Mechanical-Drawings.png" alt="Car design" />
+  <model-viewer id="thumbnail2" src="3dmodels/cars/dodge.glb" alt="Dodge" class="thumbnail"
+                    camera-controls touch-action="pan-y" style="width: 80px; height: 80px;"
+                    onclick="changeModel('3dmodels/cars/dodge.glb', this)"></model-viewer>
         <div class="item-info">
-          <p>Mechanical design</p>
-          <p>Description ▼</p>
+          <p>Dodge</p>
+          <p>Dodge – Power, Performance, and Pure American Muscle. Unleash the beast with Dodge.</p>
         </div>
-        <div class="price">₹300/-</div>
+        <div class="price">₹42.50</div>
         <button class="edit-btn">✖ Edit Order</button>
       </div>
 
       <div class="cart-item">
         <input type="checkbox" checked />
-        <img src="images/design1.jpg" alt="Blueprint" />
+                        <model-viewer id="thumbnail3" src="3dmodels/cars/f1.glb" alt="F1" class="thumbnail" camera-controls
+                    touch-action="pan-y" style="width: 80px; height: 80px;"
+                    onclick="changeModel('3dmodels/cars/f1.glb', this)"></model-viewer>
         <div class="item-info">
-          <p>Mechanical design</p>
-          <p>Description ▼</p>
+          <p>Formula 1</p>
+          <p>Formula 1 – The Pinnacle of Motorsport Engineering. Welcome to the world of Formula 1.</p>
         </div>
-        <div class="price">₹300/-</div>
+        <div class="price">₹55.00</div>
         <button class="edit-btn">✖ Edit Order</button>
       </div>
 
@@ -593,17 +601,26 @@
       checkboxes.forEach((checkbox) => {
         if (checkbox.checked) {
           itemCount++;
-          total += 300; // Price per item
+          // Get the price text from the sibling .price div
+          const priceDiv = checkbox.parentElement.querySelector('.price');
+          if (priceDiv) {
+            // Extract numeric value from price text like "₹38.99"
+            const priceText = priceDiv.textContent.trim();
+            const priceValue = parseFloat(priceText.replace(/[^\d.]/g, ''));
+            if (!isNaN(priceValue)) {
+              total += priceValue;
+            }
+          }
         }
       });
 
-      const discountAmount = itemCount * 100;
+      const discountAmount = itemCount * 15.5;
       const finalAmount = total - discountAmount;
 
       summaryItems.textContent = `Summary(${itemCount} Item${itemCount !== 1 ? 's' : ''})`;
-      totalPrice.textContent = `₹${total}`;
+      totalPrice.textContent = `₹${total.toFixed(2)}`;
       discount.textContent = `₹${discountAmount}`;
-      finalTotal.textContent = `₹${finalAmount}`;
+      finalTotal.textContent = `₹${finalAmount.toFixed(2)}`;
     }
 
     function getTotalAmount() {
