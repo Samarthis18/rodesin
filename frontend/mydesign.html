@@ -260,6 +260,26 @@
     .back-button:hover span {
         transform: translateX(5px);
     }
+ #backToTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 40px;
+        right: 30px;
+        z-index: 100;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+        padding: 12px 18px;
+        border-radius: 50%;
+        transition: opacity 0.3s ease;
+    }
+
+    #backToTopBtn:hover {
+        background-color: #555;
+    }
 
     /* Hero Section */
     .hero-section {
@@ -883,8 +903,30 @@
         }
     }
 </style>
-<script src="">
-      
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Back to Top Button Functionality
+        const backToTopBtn = document.getElementById("backToTopBtn");
+        const backbutton = document.querySelector('.back-button');
+
+        window.addEventListener('scroll', function () {
+            if (document.body.scrollTop > 10 || document.documentElement.scrollTop > 10) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        });
+    
+        backToTopBtn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+     function goBack() {
+                // In a real application, this would navigate back
+                console.log('Going back to previous page');
+                window.history.back();
+            }
 
     // Add click event listener to all model-viewer elements on the page
     document.querySelectorAll('model-viewer').forEach(modelViewer => {
@@ -962,11 +1004,11 @@
     });
 
     // Back Button Functionality
-     function goBack() {
-                // In a real application, this would navigate back
-                console.log('Going back to previous page');
-                window.history.back();
-            }
+    const backButton = document.querySelector('.back-button');
+
+    backButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // See More Button Functionality
     const seeMoreBtn = document.querySelector('.see-more-btn');
@@ -1066,6 +1108,8 @@
     <span>← GO BACK</span>
   </div>
   
+<!-- Back to Top Button -->
+    <button id="backToTopBtn" title="Go to top">↑</button>
 
   
 
